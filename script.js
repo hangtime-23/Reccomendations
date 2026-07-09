@@ -1,5 +1,5 @@
 // The Movie Database (TMDB) API Key
-const TMDB_API_KEY = 'YOUR_TMDB_API_KEY_HERE'; // Sign up for free at https://www.themoviedb.org/settings/api
+const TMDB_API_KEY = '3f32b0d37cec9744ea7f339b5b53fb52'; // Sign up for free at https://www.themoviedb.org/settings/api
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 // Google Sheet CSV export URL

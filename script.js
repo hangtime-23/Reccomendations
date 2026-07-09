@@ -2,6 +2,10 @@
 const TMDB_API_KEY = '3f32b0d37cec9744ea7f339b5b53fb52'; // Sign up for free at https://www.themoviedb.org/settings/api
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
+// Quick runtime debug to confirm the API key is available in the browser environment
+// (Remove this log if you don't want the key visible in console.)
+console.log('TMDB_API_KEY present:', !!TMDB_API_KEY, 'length:', (TMDB_API_KEY || '').length);
+
 // Google Sheet CSV export URL
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1uxSoc4gFHb2B4BF29VJVHWrAG7-L4Mr08xrd2XBdPpI/export?format=csv';
 
@@ -26,7 +30,8 @@ async function loadMoviesFromSheet() {
 }
 
 async function fetchTMDBData(title, type) {
-    if (!TMDB_API_KEY || TMDB_API_KEY === 'YOUR_TMDB_API_KEY_HERE') {
+    // Treat empty string or common placeholder as missing
+    if (!TMDB_API_KEY || TMDB_API_KEY.trim() === '' || TMDB_API_KEY === 'YOUR_TMDB_API_KEY_HERE') {
         return { score: 'N/A', summary: 'API key not configured' };
     }
     

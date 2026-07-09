@@ -1,3 +1,7 @@
+// The Movie Database (TMDB) API Key
+const TMDB_API_KEY = 'YOUR_TMDB_API_KEY_HERE'; // Sign up for free at https://www.themoviedb.org/settings/api
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+
 // Google Sheet CSV export URL
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1uxSoc4gFHb2B4BF29VJVHWrAG7-L4Mr08xrd2XBdPpI/export?format=csv';
 
@@ -6,10 +10,51 @@ async function loadMoviesFromSheet() {
         const response = await fetch(SHEET_URL);
         const csvText = await response.text();
         const movies = parseCSV(csvText);
-        renderMovies(movies);
+        
+        // Fetch additional data from TMDB for each movie
+        const enrichedMovies = await Promise.all(
+            movies.map(async (movie) => {
+                const tmdbData = await fetchTMDBData(movie.Name, movie.Type);
+                return { ...movie, ...tmdbData };
+            })
+        );
+        
+        renderMovies(enrichedMovies);
     } catch (error) {
         console.error('Error loading movies:', error);
     }
+}
+
+async function fetchTMDBData(title, type) {
+    if (!TMDB_API_KEY || TMDB_API_KEY === 'YOUR_TMDB_API_KEY_HERE') {
+        return { score: 'N/A', summary: 'API key not configured' };
+    }
+    
+    try {
+        const searchType = type && type.toLowerCase() === 'tv' ? 'tv' : 'movie';
+        const endpoint = `${TMDB_BASE_URL}/search/${searchType}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`;
+        
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+            const result = data.results[0];
+            // Convert TMDB vote average (0-10) to Rotten Tomatoes style (0-100)
+            const score = Math.round(result.vote_average * 10);
+            const summary = result.overview || 'No summary available';
+            
+            return {
+                score: score,
+                summary: summary,
+                tmdbId: result.id,
+                posterPath: result.poster_path
+            };
+        }
+    } catch (error) {
+        console.error(`Error fetching TMDB data for "${title}":`, error);
+    }
+    
+    return { score: 'N/A', summary: 'Summary not available' };
 }
 
 function parseCSV(csvText) {
@@ -113,12 +158,25 @@ function renderSection(sectionId, movies) {
     movies.forEach(movie => {
         const card = document.createElement('div');
         card.className = 'movie-card';
+        
+        const scoreClass = movie.score !== 'N/A' ? 
+            (movie.score >= 70 ? 'high-score' : movie.score >= 50 ? 'medium-score' : 'low-score') : '';
+        
         card.innerHTML = `
             <div class="movie-info">
                 <h3>${movie.Name || 'Unknown'}</h3>
                 <p class="type">🎞️ ${movie.Type || 'N/A'}</p>
                 <p class="recommended"><strong>Recommended by:</strong> ${movie['Recommended by'] || 'Unknown'}</p>
                 <p class="status"><strong>Status:</strong> ${movie.Status || 'Unknown'}</p>
+                
+                <div class="score-section">
+                    <span class="score-label">🍅 Rotten Tomatoes Score:</span>
+                    <span class="score ${scoreClass}">${movie.score}${movie.score !== 'N/A' ? '%' : ''}</span>
+                </div>
+                
+                <div class="summary-section">
+                    <p class="summary">${movie.summary}</p>
+                </div>
             </div>
         `;
         grid.appendChild(card);

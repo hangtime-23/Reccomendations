@@ -13,19 +13,88 @@ async function loadMoviesFromSheet() {
 }
 
 function parseCSV(csvText) {
-    const lines = csvText.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim());
+    const lines = [];
+    let currentLine = '';
+    let insideQuotes = false;
+
+    // Parse CSV properly handling quoted fields
+    for (let i = 0; i < csvText.length; i++) {
+        const char = csvText[i];
+        const nextChar = csvText[i + 1];
+
+        if (char === '"') {
+            if (insideQuotes && nextChar === '"') {
+                // Escaped quote
+                currentLine += '"';
+                i++;
+            } else {
+                // Toggle quote state
+                insideQuotes = !insideQuotes;
+            }
+        } else if (char === '\n' && !insideQuotes) {
+            // End of line (only if not inside quotes)
+            lines.push(currentLine);
+            currentLine = '';
+        } else if (char === '\r') {
+            // Skip carriage returns
+            continue;
+        } else {
+            currentLine += char;
+        }
+    }
+
+    if (currentLine) {
+        lines.push(currentLine);
+    }
+
+    // Parse headers
+    const headers = parseCSVLine(lines[0]);
     const movies = [];
 
+    // Parse data rows
     for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim());
+        if (lines[i].trim() === '') continue; // Skip empty lines
+
+        const values = parseCSVLine(lines[i]);
         const movie = {};
         headers.forEach((header, index) => {
             movie[header] = values[index] || '';
         });
         movies.push(movie);
     }
+
     return movies;
+}
+
+function parseCSVLine(line) {
+    const values = [];
+    let currentValue = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+
+        if (char === '"') {
+            if (insideQuotes && nextChar === '"') {
+                // Escaped quote
+                currentValue += '"';
+                i++;
+            } else {
+                // Toggle quote state
+                insideQuotes = !insideQuotes;
+            }
+        } else if (char === ',' && !insideQuotes) {
+            // Comma outside quotes = field separator
+            values.push(currentValue.trim());
+            currentValue = '';
+        } else {
+            currentValue += char;
+        }
+    }
+
+    values.push(currentValue.trim());
+    return values;
 }
 
 function renderMovies(movies) {
@@ -46,10 +115,10 @@ function renderSection(sectionId, movies) {
         card.className = 'movie-card';
         card.innerHTML = `
             <div class="movie-info">
-                <h3>${movie.Name}</h3>
-                <p class="type">🎞️ ${movie.Type}</p>
-                <p class="recommended"><strong>Recommended by:</strong> ${movie['Recommended by']}</p>
-                <p class="status"><strong>Status:</strong> ${movie.Status}</p>
+                <h3>${movie.Name || 'Unknown'}</h3>
+                <p class="type">🎞️ ${movie.Type || 'N/A'}</p>
+                <p class="recommended"><strong>Recommended by:</strong> ${movie['Recommended by'] || 'Unknown'}</p>
+                <p class="status"><strong>Status:</strong> ${movie.Status || 'Unknown'}</p>
             </div>
         `;
         grid.appendChild(card);

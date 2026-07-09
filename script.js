@@ -48,18 +48,70 @@ async function fetchTMDBData(title, type) {
             const score = Math.round(result.vote_average * 10);
             const summary = result.overview || 'No summary available';
             
+            // Fetch detailed information including genres, runtime, and cast
+            const detailsData = await fetchTMDBDetails(result.id, searchType);
+            
             return {
                 score: score,
                 summary: summary,
                 tmdbId: result.id,
-                posterPath: result.poster_path
+                posterPath: result.poster_path,
+                genres: detailsData.genres,
+                runtime: detailsData.runtime,
+                leadActors: detailsData.leadActors
             };
         }
     } catch (error) {
         console.error(`Error fetching TMDB data for "${title}":`, error);
     }
     
-    return { score: 'N/A', summary: 'Summary not available' };
+    return { 
+        score: 'N/A', 
+        summary: 'Summary not available',
+        genres: 'N/A',
+        runtime: 'N/A',
+        leadActors: 'N/A'
+    };
+}
+
+async function fetchTMDBDetails(tmdbId, searchType) {
+    try {
+        const detailsEndpoint = `${TMDB_BASE_URL}/${searchType}/${tmdbId}?api_key=${TMDB_API_KEY}`;
+        const creditsEndpoint = `${TMDB_BASE_URL}/${searchType}/${tmdbId}/credits?api_key=${TMDB_API_KEY}`;
+        
+        const [detailsResponse, creditsResponse] = await Promise.all([
+            fetch(detailsEndpoint),
+            fetch(creditsEndpoint)
+        ]);
+        
+        const detailsData = await detailsResponse.json();
+        const creditsData = await creditsResponse.json();
+        
+        // Extract genres
+        const genres = detailsData.genres && detailsData.genres.length > 0 
+            ? detailsData.genres.map(g => g.name).join(', ')
+            : 'N/A';
+        
+        // Extract runtime
+        let runtime = 'N/A';
+        if (searchType === 'movie' && detailsData.runtime) {
+            runtime = `${detailsData.runtime} min`;
+        } else if (searchType === 'tv' && detailsData.episode_run_time && detailsData.episode_run_time.length > 0) {
+            runtime = `${detailsData.episode_run_time[0]} min/ep`;
+        }
+        
+        // Extract lead actors (top 3 cast members)
+        let leadActors = 'N/A';
+        if (creditsData.cast && creditsData.cast.length > 0) {
+            const topActors = creditsData.cast.slice(0, 3).map(actor => actor.name);
+            leadActors = topActors.join(', ');
+        }
+        
+        return { genres, runtime, leadActors };
+    } catch (error) {
+        console.error(`Error fetching TMDB details for ID ${tmdbId}:`, error);
+        return { genres: 'N/A', runtime: 'N/A', leadActors: 'N/A' };
+    }
 }
 
 function parseCSV(csvText) {
@@ -173,6 +225,10 @@ function renderSection(sectionId, movies) {
                 <p class="type">🎞️ ${movie.Type || 'N/A'}</p>
                 <p class="recommended"><strong>Recommended by:</strong> ${movie['Recommended by'] || 'Unknown'}</p>
                 <p class="status"><strong>Status:</strong> ${movie.Status || 'Unknown'}</p>
+                
+                <p class="genre"><strong>Genre:</strong> ${movie.genres || 'N/A'}</p>
+                <p class="runtime"><strong>Runtime:</strong> ${movie.runtime || 'N/A'}</p>
+                <p class="cast"><strong>Lead Actors:</strong> ${movie.leadActors || 'N/A'}</p>
                 
                 <div class="score-section">
                     <span class="score-label">🍅 Rotten Tomatoes Score:</span>

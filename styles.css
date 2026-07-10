@@ -5,24 +5,30 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
+    color: #e2e8f0;
     min-height: 100vh;
     padding: 20px;
 }
 
 header {
     text-align: center;
-    color: white;
+    color: #f1f5f9;
     margin-bottom: 40px;
     animation: slideDown 0.6s ease-out;
 }
 
 header h1 {
     font-size: 3em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
     margin-bottom: 10px;
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 main {
@@ -36,10 +42,12 @@ main {
 }
 
 .section h2 {
-    color: white;
+    color: #f1f5f9;
     margin-bottom: 20px;
     font-size: 1.8em;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+    font-weight: 600;
+    letter-spacing: -0.25px;
 }
 
 .movies-grid {
@@ -49,17 +57,19 @@ main {
 }
 
 .movie-card {
-    background: white;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid #334155;
     border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     animation: scaleIn 0.5s ease-out;
 }
 
 .movie-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 32px rgba(6, 182, 212, 0.15);
+    border-color: #06b6d4;
 }
 
 .movie-info {
@@ -69,39 +79,58 @@ main {
 .movie-info h3 {
     font-size: 1.4em;
     margin-bottom: 10px;
-    color: #667eea;
+    color: #0ea5e9;
     word-wrap: break-word;
+    font-weight: 600;
 }
 
 .movie-info h3 a {
-    color: #667eea;
+    color: #0ea5e9;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .movie-info h3 a:hover {
-    color: #764ba2;
+    color: #06b6d4;
     text-decoration: underline;
 }
 
 .type {
     font-size: 0.95em;
-    color: #666;
+    color: #cbd5e1;
     margin-bottom: 10px;
 }
 
 .recommended {
     font-size: 0.9em;
-    color: #555;
+    color: #cbd5e1;
     margin-bottom: 8px;
 }
 
 .status {
     font-size: 0.9em;
-    color: #555;
+    color: #cbd5e1;
     margin-bottom: 15px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #334155;
+}
+
+.genre {
+    font-size: 0.9em;
+    color: #cbd5e1;
+    margin-bottom: 6px;
+}
+
+.runtime {
+    font-size: 0.9em;
+    color: #cbd5e1;
+    margin-bottom: 6px;
+}
+
+.cast {
+    font-size: 0.9em;
+    color: #cbd5e1;
+    margin-bottom: 12px;
 }
 
 .score-section {
@@ -110,20 +139,21 @@ main {
     gap: 10px;
     margin-bottom: 15px;
     padding: 10px;
-    background: #f8f9fa;
+    background: rgba(2, 132, 199, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.2);
     border-radius: 8px;
     flex-wrap: wrap;
 }
 
 .score-label {
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    color: #cbd5e1;
     font-size: 0.95em;
 }
 
 .score {
     display: inline-block;
-    font-weight: bold;
+    font-weight: 700;
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 0.85em;
@@ -132,32 +162,33 @@ main {
 }
 
 .score.high-score {
-    background: #4caf50;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
 }
 
 .score.medium-score {
-    background: #ff9800;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     color: white;
 }
 
 .score.low-score {
-    background: #f44336;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
 }
 
 .watch-providers-section {
     margin: 15px 0;
     padding: 12px;
-    background: #f0f4ff;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.3);
     border-radius: 8px;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #06b6d4;
 }
 
 .watch-title {
     font-size: 0.95em;
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    color: #0ea5e9;
     margin-bottom: 10px;
 }
 
@@ -168,7 +199,7 @@ main {
 .provider-group h4 {
     font-size: 0.8em;
     font-weight: 600;
-    color: #666;
+    color: #94a3b8;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 6px;
@@ -198,12 +229,13 @@ main {
     height: 36px;
     border-radius: 4px;
     object-fit: cover;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(6, 182, 212, 0.2);
 }
 
 .provider-name {
     font-size: 0.65em;
-    color: #555;
+    color: #94a3b8;
     text-align: center;
     max-width: 45px;
     word-break: break-word;
@@ -212,7 +244,7 @@ main {
 
 .no-providers {
     font-size: 0.85em;
-    color: #999;
+    color: #64748b;
     font-style: italic;
     margin: 5px 0;
 }
@@ -224,7 +256,7 @@ main {
 .summary {
     font-size: 0.9em;
     line-height: 1.5;
-    color: #555;
+    color: #cbd5e1;
     max-height: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -235,7 +267,7 @@ main {
 
 footer {
     text-align: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: #64748b;
     padding: 30px;
     font-size: 0.9em;
     margin-top: 50px;

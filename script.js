@@ -317,13 +317,13 @@ function renderSection(sectionId, movies) {
                     <span class="score ${scoreClass}">${movie.score}${movie.score !== 'N/A' ? '%' : ''}</span>
                 </div>
                 
+                <div class="summary-section">
+                    <p class="summary">${movie.summary}</p>
+                </div>
+                
                 <div class="watch-providers-section">
                     <h4 class="watch-title">Where to Watch in NZ 🇳🇿</h4>
                     ${watchProvidersHtml}
-                </div>
-                
-                <div class="summary-section">
-                    <p class="summary">${movie.summary}</p>
                 </div>
             </div>
         `;

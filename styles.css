@@ -73,6 +73,17 @@ main {
     word-wrap: break-word;
 }
 
+.movie-info h3 a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.movie-info h3 a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
 .type {
     font-size: 0.95em;
     color: #666;
@@ -115,7 +126,7 @@ main {
     font-weight: bold;
     padding: 6px 12px;
     border-radius: 6px;
-    font-size: 1.1em;
+    font-size: 0.85em;
     min-width: 60px;
     text-align: center;
 }
@@ -133,6 +144,77 @@ main {
 .score.low-score {
     background: #f44336;
     color: white;
+}
+
+.watch-providers-section {
+    margin: 15px 0;
+    padding: 12px;
+    background: #f0f4ff;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.watch-title {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.provider-group {
+    margin-bottom: 12px;
+}
+
+.provider-group h4 {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.providers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.provider-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.provider-item:hover {
+    transform: scale(1.05);
+}
+
+.provider-item img {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.provider-name {
+    font-size: 0.65em;
+    color: #555;
+    text-align: center;
+    max-width: 45px;
+    word-break: break-word;
+    line-height: 1.2;
+}
+
+.no-providers {
+    font-size: 0.85em;
+    color: #999;
+    font-style: italic;
+    margin: 5px 0;
 }
 
 .summary-section {
@@ -203,5 +285,19 @@ footer {
     .score-section {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .providers-list {
+        gap: 6px;
+    }
+
+    .provider-item img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .provider-name {
+        font-size: 0.6em;
+        max-width: 40px;
     }
 }

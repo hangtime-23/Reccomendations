@@ -1,6 +1,7 @@
 // The Movie Database (TMDB) API Key
 const TMDB_API_KEY = '3f32b0d37cec9744ea7f339b5b53fb52'; // Sign up for free at https://www.themoviedb.org/settings/api
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const WATCH_REGION = 'NZ'; // New Zealand
 
 // Quick runtime debug to confirm the API key is available in the browser environment
 // (Remove this log if you don't want the key visible in console.)
@@ -48,8 +49,9 @@ async function fetchTMDBData(title, type) {
             const score = Math.round(result.vote_average * 10);
             const summary = result.overview || 'No summary available';
             
-            // Fetch detailed information including genres, runtime, and cast
+            // Fetch detailed information including genres, runtime, cast, and watch providers
             const detailsData = await fetchTMDBDetails(result.id, searchType);
+            const watchProvidersData = await fetchWatchProviders(result.id, searchType);
             
             return {
                 score: score,
@@ -59,7 +61,8 @@ async function fetchTMDBData(title, type) {
                 genres: detailsData.genres,
                 runtime: detailsData.runtime,
                 leadActors: detailsData.leadActors,
-                searchType: searchType
+                searchType: searchType,
+                watchProviders: watchProvidersData
             };
         }
     } catch (error) {
@@ -73,7 +76,8 @@ async function fetchTMDBData(title, type) {
         runtime: 'N/A',
         leadActors: 'N/A',
         tmdbId: null,
-        searchType: 'movie'
+        searchType: 'movie',
+        watchProviders: { flatrate: [], buy: [], rent: [] }
     };
 }
 
@@ -115,6 +119,28 @@ async function fetchTMDBDetails(tmdbId, searchType) {
         console.error(`Error fetching TMDB details for ID ${tmdbId}:`, error);
         return { genres: 'N/A', runtime: 'N/A', leadActors: 'N/A' };
     }
+}
+
+async function fetchWatchProviders(tmdbId, searchType) {
+    try {
+        const endpoint = `${TMDB_BASE_URL}/${searchType}/${tmdbId}/watch/providers?api_key=${TMDB_API_KEY}`;
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        // Get New Zealand watch providers
+        if (data.results && data.results[WATCH_REGION]) {
+            const nzProviders = data.results[WATCH_REGION];
+            return {
+                flatrate: nzProviders.flatrate || [],
+                buy: nzProviders.buy || [],
+                rent: nzProviders.rent || []
+            };
+        }
+    } catch (error) {
+        console.error(`Error fetching watch providers for ID ${tmdbId}:`, error);
+    }
+    
+    return { flatrate: [], buy: [], rent: [] };
 }
 
 function parseCSV(csvText) {
@@ -210,6 +236,65 @@ function renderMovies(movies) {
     renderSection('watched', watched);
 }
 
+function renderWatchProviders(providers) {
+    let html = '';
+    
+    if (!providers) {
+        return '<p class="no-providers">Not available in New Zealand</p>';
+    }
+    
+    const { flatrate = [], buy = [], rent = [] } = providers;
+    
+    // Stream (subscription)
+    if (flatrate && flatrate.length > 0) {
+        html += '<div class="provider-group">';
+        html += '<h4>Stream</h4>';
+        html += '<div class="providers-list">';
+        flatrate.forEach(provider => {
+            html += `<div class="provider-item" title="${provider.provider_name}">
+                        <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" alt="${provider.provider_name}">
+                        <span class="provider-name">${provider.provider_name}</span>
+                    </div>`;
+        });
+        html += '</div></div>';
+    }
+    
+    // Buy
+    if (buy && buy.length > 0) {
+        html += '<div class="provider-group">';
+        html += '<h4>Buy</h4>';
+        html += '<div class="providers-list">';
+        buy.forEach(provider => {
+            html += `<div class="provider-item" title="${provider.provider_name}">
+                        <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" alt="${provider.provider_name}">
+                        <span class="provider-name">${provider.provider_name}</span>
+                    </div>`;
+        });
+        html += '</div></div>';
+    }
+    
+    // Rent
+    if (rent && rent.length > 0) {
+        html += '<div class="provider-group">';
+        html += '<h4>Rent</h4>';
+        html += '<div class="providers-list">';
+        rent.forEach(provider => {
+            html += `<div class="provider-item" title="${provider.provider_name}">
+                        <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" alt="${provider.provider_name}">
+                        <span class="provider-name">${provider.provider_name}</span>
+                    </div>`;
+        });
+        html += '</div></div>';
+    }
+    
+    // If no providers found
+    if (!html) {
+        html = '<p class="no-providers">Not available for streaming in New Zealand</p>';
+    }
+    
+    return html;
+}
+
 function renderSection(sectionId, movies) {
     const section = document.getElementById(sectionId);
     const grid = section.querySelector('.movies-grid');
@@ -229,6 +314,8 @@ function renderSection(sectionId, movies) {
             titleElement = `<a href="${tmdbUrl}" target="_blank" rel="noopener noreferrer">${movie.Name || 'Unknown'}</a>`;
         }
         
+        const watchProvidersHtml = renderWatchProviders(movie.watchProviders);
+        
         card.innerHTML = `
             <div class="movie-info">
                 <h3>${titleElement}</h3>
@@ -243,6 +330,11 @@ function renderSection(sectionId, movies) {
                 <div class="score-section">
                     <span class="score-label">🍅 Rotten Tomatoes Score:</span>
                     <span class="score ${scoreClass}">${movie.score}${movie.score !== 'N/A' ? '%' : ''}</span>
+                </div>
+                
+                <div class="watch-providers-section">
+                    <h4 class="watch-title">Where to Watch in NZ 🇳🇿</h4>
+                    ${watchProvidersHtml}
                 </div>
                 
                 <div class="summary-section">

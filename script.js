@@ -58,7 +58,8 @@ async function fetchTMDBData(title, type) {
                 posterPath: result.poster_path,
                 genres: detailsData.genres,
                 runtime: detailsData.runtime,
-                leadActors: detailsData.leadActors
+                leadActors: detailsData.leadActors,
+                searchType: searchType
             };
         }
     } catch (error) {
@@ -70,7 +71,9 @@ async function fetchTMDBData(title, type) {
         summary: 'Summary not available',
         genres: 'N/A',
         runtime: 'N/A',
-        leadActors: 'N/A'
+        leadActors: 'N/A',
+        tmdbId: null,
+        searchType: 'movie'
     };
 }
 
@@ -219,9 +222,16 @@ function renderSection(sectionId, movies) {
         const scoreClass = movie.score !== 'N/A' ? 
             (movie.score >= 70 ? 'high-score' : movie.score >= 50 ? 'medium-score' : 'low-score') : '';
         
+        // Build the title element - clickable link if TMDB ID exists
+        let titleElement = movie.Name || 'Unknown';
+        if (movie.tmdbId) {
+            const tmdbUrl = `https://www.themoviedb.org/${movie.searchType}/${movie.tmdbId}`;
+            titleElement = `<a href="${tmdbUrl}" target="_blank" rel="noopener noreferrer">${movie.Name || 'Unknown'}</a>`;
+        }
+        
         card.innerHTML = `
             <div class="movie-info">
-                <h3>${movie.Name || 'Unknown'}</h3>
+                <h3>${titleElement}</h3>
                 <p class="type">🎞️ ${movie.Type || 'N/A'}</p>
                 <p class="recommended"><strong>Recommended by:</strong> ${movie['Recommended by'] || 'Unknown'}</p>
                 <p class="status"><strong>Status:</strong> ${movie.Status || 'Unknown'}</p>

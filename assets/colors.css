@@ -1,0 +1,104 @@
+:root {
+  /* Teal & Charcoal (light) */
+  --color-bg: #FAFAFB;
+  --color-surface: #FFFFFF;
+  --color-primary: #0EA5A4;
+  --color-primary-700: #0B8F8D;
+  --color-accent: #F97316;
+  --color-text: #0F172A;
+  --color-muted: #6B7280;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+
+  /* Spacing / elevation */
+  --radius: 8px;
+  --shadow-sm: 0 1px 2px rgba(15,23,36,0.05);
+  --shadow-md: 0 6px 18px rgba(15,23,36,0.08);
+}
+
+/* Dark theme variant (toggle by adding data-theme="dark" on <html> or <body>) */
+[data-theme="dark"] {
+  --color-bg: #0B1114;
+  --color-surface: #0F1720;
+  --color-primary: #2DD4BF;
+  --color-accent: #F97316;
+  --color-text: #E6EEF8;
+  --color-muted: #9CA3AF;
+  --color-success: #10B981;
+  --color-warning: #FBBF24;
+  --color-danger: #FB7185;
+}
+
+/* Base */
+html, body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+/* Surface/card */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem;
+  color: var(--color-text);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .06s ease;
+  color: white;
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-700) 100%);
+  box-shadow: 0 6px 18px rgba(14,165,164,0.12);
+}
+.btn:active { transform: translateY(1px); }
+.btn.ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid rgba(14,165,164,0.12);
+  box-shadow: none;
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+}
+a:hover { text-decoration: underline; }
+
+/* Navbar */
+.navbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid rgba(15,23,36,0.04);
+  padding: .6rem 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Small UI tokens */
+.kicker { color: var(--color-muted); font-size: .85rem; }
+.badge {
+  display: inline-block;
+  padding: .2rem .5rem;
+  border-radius: 999px;
+  background: rgba(14,165,164,0.08);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: .78rem;
+}

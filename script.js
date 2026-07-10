@@ -77,7 +77,7 @@ async function fetchTMDBData(title, type) {
         leadActors: 'N/A',
         tmdbId: null,
         searchType: 'movie',
-        watchProviders: { flatrate: [], buy: [], rent: [] }
+        watchProviders: { flatrate: [], rent: [] }
     };
 }
 
@@ -132,7 +132,6 @@ async function fetchWatchProviders(tmdbId, searchType) {
             const nzProviders = data.results[WATCH_REGION];
             return {
                 flatrate: nzProviders.flatrate || [],
-                buy: nzProviders.buy || [],
                 rent: nzProviders.rent || []
             };
         }
@@ -140,7 +139,7 @@ async function fetchWatchProviders(tmdbId, searchType) {
         console.error(`Error fetching watch providers for ID ${tmdbId}:`, error);
     }
     
-    return { flatrate: [], buy: [], rent: [] };
+    return { flatrate: [], rent: [] };
 }
 
 function parseCSV(csvText) {
@@ -243,7 +242,7 @@ function renderWatchProviders(providers) {
         return '<p class="no-providers">Not available in New Zealand</p>';
     }
     
-    const { flatrate = [], buy = [], rent = [] } = providers;
+    const { flatrate = [], rent = [] } = providers;
     
     // Stream (subscription)
     if (flatrate && flatrate.length > 0) {
@@ -251,20 +250,6 @@ function renderWatchProviders(providers) {
         html += '<h4>Stream</h4>';
         html += '<div class="providers-list">';
         flatrate.forEach(provider => {
-            html += `<div class="provider-item" title="${provider.provider_name}">
-                        <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" alt="${provider.provider_name}">
-                        <span class="provider-name">${provider.provider_name}</span>
-                    </div>`;
-        });
-        html += '</div></div>';
-    }
-    
-    // Buy
-    if (buy && buy.length > 0) {
-        html += '<div class="provider-group">';
-        html += '<h4>Buy</h4>';
-        html += '<div class="providers-list">';
-        buy.forEach(provider => {
             html += `<div class="provider-item" title="${provider.provider_name}">
                         <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" alt="${provider.provider_name}">
                         <span class="provider-name">${provider.provider_name}</span>

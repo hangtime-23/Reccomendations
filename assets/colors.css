@@ -4,7 +4,7 @@
   --color-surface: #FFFFFF;
   /* Card color: keep surface for general UI, but provide a dedicated card color
      that's slightly lighter than the page background so cards stand out. */
-  --color-card: #FFFFFF;
+  --color-card: #F8FAFC;
   --color-primary: #0EA5A4;
   --color-primary-700: #0B8F8D;
   --color-accent: #F97316;

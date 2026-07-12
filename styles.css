@@ -57,7 +57,8 @@ main {
 }
 
 .movie-card {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    /* Use the theme card variable so changing --color-card updates movie cards */
+    background: var(--color-card);
     border: 1px solid #334155;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
